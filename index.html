@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SNJB College Assistant</title>
+<meta name="description" content="AI assistant for SNJB College of Engineering — ask about academics or fees, answered by a routed LangGraph AI." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="ambient-bg" id="ambientBg"></div>
+
+<div class="app" id="app">
+
+  <!-- ============ ONBOARDING ============ -->
+  <section class="onboarding" id="onboarding">
+    <div class="onboarding-photo" aria-hidden="true">
+      <img src="campus.jpg" alt="" />
+      <div class="onboarding-photo-overlay"></div>
+    </div>
+    <div class="onboarding-inner">
+      <p class="eyebrow">WELCOME TO &nbsp;•&nbsp; SNJB COLLEGE AI ASSISTANT</p>
+      <h1 class="headline">Welcome to SNJB College<br />AI Assistant</h1>
+      <p class="subhead">
+    Get instant answers to all your college-related questions.
+    Our AI Assistant can help you with Admissions, Academics,
+    Fees, Attendance, Examinations, Placements, Scholarships,
+    Campus Facilities and much more.
+    <br><br>
+    Select your programme below and start chatting with your
+    personal college assistant.
+    </p>
+
+    <h3 class="programme-title">Choose Your Programme</h3>
+
+      <div class="programme-grid" id="programmeGrid">
+        <button class="programme-card" data-programme="B.E. Computer Engineering">
+          <span class="prog-code">COMP</span>
+          <span class="prog-name">B.E. Computer Engineering</span>
+        </button>
+        <button class="programme-card" data-programme="B.E. Artificial Intelligence and Data Science">
+          <span class="prog-code">AI&amp;DS</span>
+          <span class="prog-name">B.E. Artificial Intelligence &amp; Data Science</span>
+        </button>
+        <button class="programme-card" data-programme="B.E. Mechanical Engineering">
+          <span class="prog-code">MECH</span>
+          <span class="prog-name">B.E. Mechanical Engineering</span>
+        </button>
+        <button class="programme-card" data-programme="B.E. Civil Engineering">
+          <span class="prog-code">CIVIL</span>
+          <span class="prog-name">B.E. Civil Engineering</span>
+        </button>
+        <button class="programme-card" data-programme="B.E. Electronics & Telecommunication Engineering">
+          <span class="prog-code">E&amp;TC</span>
+          <span class="prog-name">B.E. Electronics &amp; Telecommunication Engineering</span>
+        </button>
+        <button class="programme-card" data-programme="MBA">
+          <span class="prog-code">MBA</span>
+          <span class="prog-name">Master of Business Administration</span>
+        </button>
+        <button class="programme-card" data-programme="M.Tech">
+          <span class="prog-code">M.TECH</span>
+          <span class="prog-name">Master of Technology</span>
+        </button>
+      </div>
+
+      <p class="start-note">
+        💬 Select your programme to start chatting with the AI Assistant.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ============ CHAT SCREEN ============ -->
+  <section class="chat-screen" id="chatScreen" hidden>
+
+    <header class="chat-header">
+      <div class="header-left">
+        <span class="app-title">🎓 SNJB <span class="accent">College AI Assistant</span></span>
+        <button class="programme-badge" id="programmeBadge" title="Change programme">B.E. Computer Engineering</button>
+      </div>
+      <div class="header-right">
+        <span class="api-status" id="apiStatus"><span class="status-dot"></span><span>AI Online</span></span>
+        <button class="ghost-btn" id="graphToggleBtn" aria-expanded="false">
+          <span class="graph-toggle-dot"></span> AI Routing
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-body">
+
+      <main class="chat-log" id="chatLog" aria-live="polite"></main>
+
+      <aside class="graph-panel" id="graphPanel">
+        <div class="graph-panel-head">
+          <h2>AI Response Flow</h2>
+          <button class="graph-close" id="graphCloseBtn" aria-label="Close routing graph">✕</button>
+        </div>
+
+        <svg class="route-graph" id="routeGraph" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+          <!-- edges (drawn first, under nodes) -->
+          <path id="edge-start-classifier" class="edge" d="M150,42 L150,88" />
+          <path id="edge-classifier-academic" class="edge" d="M150,128 C150,155 55,150 55,185" />
+          <path id="edge-classifier-fee" class="edge" d="M150,128 L150,185" />
+          <path id="edge-classifier-general" class="edge" d="M150,128 C150,155 245,150 245,185" />
+          <path id="edge-academic-response" class="edge" d="M55,225 C55,265 150,275 150,308" />
+          <path id="edge-fee-response" class="edge" d="M150,225 L150,308" />
+          <path id="edge-general-response" class="edge" d="M245,225 C245,265 150,275 150,308" />
+          <path id="edge-response-end" class="edge" d="M150,348 L150,392" />
+
+          <!-- START -->
+          <g id="node-start" class="node node-neutral">
+            <circle cx="150" cy="26" r="16" />
+            <text x="150" y="30" text-anchor="middle">START</text>
+          </g>
+
+          <!-- CLASSIFIER -->
+          <g id="node-classifier" class="node node-neutral">
+            <rect x="105" y="90" width="90" height="38" rx="10" />
+            <text x="150" y="113" text-anchor="middle">Classifier</text>
+          </g>
+
+          <!-- BRANCHES -->
+          <g id="node-academic" class="node node-academic">
+            <rect x="12" y="187" width="86" height="38" rx="10" />
+            <text x="55" y="207" text-anchor="middle">Academic</text>
+            <text x="55" y="219" text-anchor="middle" class="node-sub">RAG</text>
+          </g>
+          <g id="node-fee" class="node node-fee">
+            <rect x="107" y="187" width="86" height="38" rx="10" />
+            <text x="150" y="207" text-anchor="middle">Fee</text>
+            <text x="150" y="219" text-anchor="middle" class="node-sub">RAG</text>
+          </g>
+          <g id="node-general" class="node node-general">
+            <rect x="202" y="187" width="86" height="38" rx="10" />
+            <text x="245" y="207" text-anchor="middle">General</text>
+            <text x="245" y="219" text-anchor="middle" class="node-sub">no retrieval</text>
+          </g>
+
+          <!-- RESPONSE -->
+          <g id="node-response" class="node node-neutral">
+            <rect x="100" y="310" width="100" height="38" rx="10" />
+            <text x="150" y="333" text-anchor="middle">Response</text>
+          </g>
+
+          <!-- END -->
+          <g id="node-end" class="node node-neutral">
+            <circle cx="150" cy="412" r="16" />
+            <text x="150" y="416" text-anchor="middle">END</text>
+          </g>
+        </svg>
+
+        <p class="graph-hint" id="graphHint">Ask any question about SNJB College and watch how the AI processes your request in real time.</p>
+
+        <div class="graph-legend">
+          <span><i class="dot dot-academic"></i> Academic</span>
+          <span><i class="dot dot-fee"></i> Fee</span>
+          <span><i class="dot dot-general"></i> General</span>
+        </div>
+      </aside>
+
+      <div class="graph-backdrop" id="graphBackdrop"></div>
+
+    </div>
+
+    <form class="chat-input-bar" id="chatForm">
+      <textarea id="chatInput" placeholder="Ask anything about admissions, academics, fees, exams, placements..." rows="1" required></textarea>
+      <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 11.5L21 3l-8.5 18-2.5-8-7-1.5z" fill="currentColor"/></svg>
+      </button>
+    </form>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
