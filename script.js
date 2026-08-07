@@ -3,7 +3,7 @@
 // ============================================================
 // Point this at wherever your FastAPI backend is running.
 // Local dev default — change to your deployed URL when you host it.
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://college-ai-assistant-rag.onrender.com";
 const CHAT_ENDPOINT = `${API_BASE_URL}/chat`;
 const HEALTH_ENDPOINT = `${API_BASE_URL}/`;
 
