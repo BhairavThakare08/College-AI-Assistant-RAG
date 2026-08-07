@@ -7,9 +7,9 @@ langchain-huggingface>=1.2.0
 langchain-text-splitters>=0.3.0
 
 # Embeddings + vector store
-# langchain-huggingface no longer bundles sentence-transformers by default,
-# it must be installed explicitly (needed for HuggingFaceEmbeddings to work)
-sentence-transformers>=5.2.0
+# Embeddings run via Hugging Face's hosted Inference API (HuggingFaceEndpointEmbeddings)
+# instead of loading the model locally — no sentence-transformers/torch needed,
+# which keeps this well under Render's free-tier 512MB RAM limit.
 faiss-cpu>=1.8.0
 pypdf>=5.0.0
 
