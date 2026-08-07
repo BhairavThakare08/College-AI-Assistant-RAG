@@ -10,7 +10,7 @@ from langgraph.graph import StateGraph, START, END
 from langchain_groq import ChatGroq
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 
@@ -38,8 +38,15 @@ SYSTEM_PERSONA = (
 )
 
 # Step 1 - Building the RAG retrievers
+# NOTE: embeddings now run via Hugging Face's hosted Inference API instead of
+# loading the model locally with sentence-transformers/torch — that alone was
+# using 300-400MB+ RAM, which is why this crashed Render's 512MB free tier.
 
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = HuggingFaceEndpointEmbeddings(
+    model="sentence-transformers/all-MiniLM-L6-v2",
+    task="feature-extraction",
+    huggingfacehub_api_token=os.environ.get("HUGGINGFACEHUB_API_TOKEN"),
+)
 
 
 def build_retriver(pdf_path: str):
@@ -55,7 +62,7 @@ def build_retriver(pdf_path: str):
     return vectorstore.as_retriever(search_kwargs={"k": 4})
 
 
-acedemic_retriever = build_retriver(os.path.join(DATA_DIR, "SNJBAcademic_Handbook2026.pdf"))
+acedemic_retriever = build_retriver(os.path.join(DATA_DIR, "SNJBAcademic_Handbook_2026.pdf"))
 fee_retriever = build_retriver(os.path.join(DATA_DIR, "SNJB_Fee_Structure_2026.pdf"))
 
 llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.4)
