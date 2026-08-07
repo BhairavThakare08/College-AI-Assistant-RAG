@@ -47,7 +47,7 @@
 
 | | |
 |---|---|
-| **Status** | Runs locally — not yet deployed |
+| **Status** | https://college-ai-assistant-rag.vercel.app/  |
 | **Backend** | `uvicorn main:app --reload --port 8000` |
 | **Frontend** | Open `frontend/index.html` directly, or serve with `python -m http.server` |
 
